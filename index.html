@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Kebutuhan Cairan Harian</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding-top: 56px;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            max-width: 800px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Theme Dark */
+        body.dark-theme {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: #ecf0f1;
+        }
+
+        body.dark-theme footer {
+            background-color: #1c2833;
+            color: #ecf0f1;
+        }
+
+        body.dark-theme .card {
+            background-color: #34495e;
+            color: #ecf0f1;
+        }
+
+        /* YouTube Video Styling */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            padding-top: 25px;
+            height: 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Kalkulator Cairan</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="nav-home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-history">Riwayat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-about">Tentang</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-settings">Pengaturan</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container my-4">
+
+        <!-- Home Section -->
+        <div id="section-home" class="fade-in">
+            <h2 class="mb-4 text-center">Kalkulator Kebutuhan Cairan Harian</h2>
+            <form id="fluid-form" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nama</label>
+                    <input type="text" class="form-control" id="name" required>
+                    <div class="invalid-feedback">
+                        Silakan isi nama Anda.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Umur (tahun)</label>
+                    <input type="number" class="form-control" id="age" min="0" required>
+                    <div class="invalid-feedback">
+                        Silakan isi umur Anda.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Jenis Kelamin</label>
+                    <select class="form-select" id="gender" required>
+                        <option value="" selected disabled>Pilih jenis kelamin</option>
+                        <option value="Perempuan">Perempuan</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Silakan pilih jenis kelamin Anda.
+                    </div>
+                </div>
+                <div class="mb-3 hidden" id="weight-group">
+                    <label for="weight" class="form-label">Berat Badan (kg)</label>
+                    <input type="number" class="form-control" id="weight" min="0">
+                    <div class="invalid-feedback">
+                        Silakan isi berat badan Anda.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="actual-intake" class="form-label">Konsumsi Cairan Aktual (ml)</label>
+                    <input type="number" class="form-control" id="actual-intake" min="0" required>
+                    <div class="invalid-feedback">
+                        Silakan isi konsumsi cairan harian Anda.
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Hitung Kebutuhan Cairan</button>
+            </form>
+        </div>
+
+        <!-- Result Section -->
+        <div id="section-result" class="hidden fade-in">
+            <h2 class="mb-4 text-center">Hasil Perhitungan</h2>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title" id="result-name"></h5>
+                    <p class="card-text" id="result-details"></p>
+                    <p class="card-text" id="result-actual"></p>
+                    <p class="card-text" id="result-status" class="fw-bold"></p>
+                    <p class="card-text" id="result-suggestion"></p>
+                </div>
+            </div>
+            <div id="video-section" class="mb-4 hidden">
+                <h5>Rekomendasi Video:</h5>
+                <div class="video-container">
+                    <iframe id="result-video" src="" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+            </div>
+            <button class="btn btn-secondary w-100" id="btn-back">Kembali</button>
+        </div>
+
+        <!-- History Section -->
+        <div id="section-history" class="hidden fade-in">
+            <h2 class="mb-4 text-center">Riwayat Perhitungan</h2>
+            <div id="history-list" class="list-group mb-3">
+                <!-- Riwayat akan ditampilkan di sini -->
+            </div>
+            <button class="btn btn-danger w-100" id="btn-clear-history">Hapus Semua Riwayat</button>
+        </div>
+
+        <!-- About Section -->
+        <div id="section-about" class="hidden fade-in">
+            <h2 class="mb-4 text-center">Tentang Aplikasi</h2>
+            <p>Aplikasi ini dirancang untuk membantu Anda menghitung kebutuhan cairan harian berdasarkan umur, jenis
+                kelamin, berat badan, dan konsumsi cairan aktual. Perhitungan didasarkan pada pedoman Kementerian
+                Kesehatan Republik Indonesia.</p>
+            <h5>Referensi:</h5>
+            <ul>
+                <li>Kebutuhan cairan anak-anak, dewasa, dan lansia berdasarkan pedoman Kemenkes RI.</li>
+            </ul>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="section-settings" class="hidden fade-in">
+            <h2 class="mb-4 text-center">Pengaturan</h2>
+            <div class="mb-3">
+                <label for="theme-select" class="form-label">Tema Aplikasi</label>
+                <select class="form-select" id="theme-select">
+                    <option value="light" selected>Tema Terang</option>
+                    <option value="dark">Tema Gelap</option>
+                </select>
+            </div>
+            <button class="btn btn-danger w-100" id="btn-reset-data">Reset Semua Data</button>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-center py-3">
+        &copy; 2024 Kalkulator Kebutuhan Cairan. Semua hak cipta dilindungi.
+    </footer>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // JavaScript Code
+
+        // Navigasi antar halaman
+        const navHome = document.getElementById('nav-home');
+        const navHistory = document.getElementById('nav-history');
+        const navAbout = document.getElementById('nav-about');
+        const navSettings = document.getElementById('nav-settings');
+
+        const sectionHome = document.getElementById('section-home');
+        const sectionResult = document.getElementById('section-result');
+        const sectionHistory = document.getElementById('section-history');
+        const sectionAbout = document.getElementById('section-about');
+        const sectionSettings = document.getElementById('section-settings');
+
+        const allSections = [sectionHome, sectionResult, sectionHistory, sectionAbout, sectionSettings];
+
+        function showSection(section) {
+            allSections.forEach(sec => {
+                if (sec === section) {
+                    sec.classList.remove('hidden');
+                } else {
+                    sec.classList.add('hidden');
+                }
+            });
+        }
+
+        navHome.addEventListener('click', () => {
+            showSection(sectionHome);
+            setActiveNav(navHome);
+        });
+
+        navHistory.addEventListener('click', () => {
+            showSection(sectionHistory);
+            setActiveNav(navHistory);
+            loadHistory();
+        });
+
+        navAbout.addEventListener('click', () => {
+            showSection(sectionAbout);
+            setActiveNav(navAbout);
+        });
+
+        navSettings.addEventListener('click', () => {
+            showSection(sectionSettings);
+            setActiveNav(navSettings);
+            loadSettings();
+        });
+
+        function setActiveNav(activeNav) {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(nav => {
+                if (nav === activeNav) {
+                    nav.classList.add('active');
+                } else {
+                    nav.classList.remove('active');
+                }
+            });
+        }
+
+        // Form Handling
+        const fluidForm = document.getElementById('fluid-form');
+        const weightGroup = document.getElementById('weight-group');
+
+        // Show/hide weight input based on age
+        document.getElementById('age').addEventListener('input', function () {
+            const age = parseInt(this.value);
+            if (!isNaN(age)) {
+                if (age < 18) {
+                    weightGroup.classList.remove('hidden');
+                    document.getElementById('weight').setAttribute('required', 'required');
+                } else {
+                    weightGroup.classList.add('hidden');
+                    document.getElementById('weight').removeAttribute('required');
+                }
+            }
+        });
+
+        // YouTube Video Links
+        const videoLinks = {
+            kurang: "https://www.youtube.com/embed/VIDEO_ID_A", // Ganti VIDEO_ID_A dengan ID video YouTube yang relevan
+            cukup: "https://www.youtube.com/embed/VIDEO_ID_C",  // Ganti VIDEO_ID_C dengan ID video YouTube yang relevan
+            berlebih: "https://www.youtube.com/embed/VIDEO_ID_B"  // Ganti VIDEO_ID_B dengan ID video YouTube yang relevan
+        };
+
+        fluidForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!fluidForm.checkValidity()) {
+                fluidForm.classList.add('was-validated');
+                return;
+            }
+
+            const name = document.getElementById('name').value.trim();
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const weightInput = document.getElementById('weight');
+            const weight = weightInput && !weightInput.classList.contains('hidden') ? parseFloat(weightInput.value) : null;
+            const actualIntake = parseFloat(document.getElementById('actual-intake').value);
+
+            const calculation = calculateFluidIntake(age, gender, weight);
+            const status = determineStatus(actualIntake, calculation.fluidIntake);
+            const suggestion = getSuggestion(status);
+
+            displayResult(name, calculation, actualIntake, status, suggestion);
+            saveToHistory(name, age, gender, weight, calculation, actualIntake, status);
+            showSection(sectionResult);
+            setActiveNav(navHome);
+            fluidForm.classList.remove('was-validated');
+            fluidForm.reset();
+            weightGroup.classList.add('hidden');
+            document.getElementById('weight').removeAttribute('required');
+        });
+
+        function calculateFluidIntake(age, gender, weight) {
+            let category;
+            let fluidIntake;
+
+            if (age < 18) {
+                category = 'Anak-anak';
+                if (weight < 10) {
+                    fluidIntake = weight * 100; // ml
+                } else if (weight >= 10 && weight <= 20) {
+                    fluidIntake = 1000 + ((weight - 10) * 50);
+                } else { // weight > 20
+                    fluidIntake = 1500 + ((weight - 20) * 20);
+                }
+            } else if (age >= 18 && age < 60) {
+                category = 'Dewasa';
+                fluidIntake = 2000; // ml
+            } else { // Lansia
+                category = 'Lansia';
+                if (gender === 'Perempuan') {
+                    if (age >= 60 && age <= 64) {
+                        fluidIntake = 2300; // ml
+                    } else if (age >= 65 && age <= 80) {
+                        fluidIntake = 1600;
+                    } else { // >80
+                        fluidIntake = 1500;
+                    }
+                } else { // Laki-laki
+                    if (age >= 60 && age <= 64) {
+                        fluidIntake = 2600; // ml
+                    } else if (age >= 65 && age <= 80) {
+                        fluidIntake = 1900;
+                    } else { // >80
+                        fluidIntake = 1600;
+                    }
+                }
+            }
+
+            return {
+                category,
+                fluidIntake
+            };
+        }
+
+        function determineStatus(actual, required) {
+            if (actual < required * 0.9) {
+                return 'kurang';
+            } else if (actual > required * 1.1) {
+                return 'berlebih';
+            } else {
+                return 'cukup';
+            }
+        }
+
+        function getSuggestion(status) {
+            switch (status) {
+                case 'kurang':
+                    return 'Konsumsi cairan Anda kurang. Disarankan untuk meningkatkan asupan cairan harian Anda.';
+                case 'berlebih':
+                    return 'Konsumsi cairan Anda berlebih. Disarankan untuk mengurangi asupan cairan harian Anda.';
+                case 'cukup':
+                    return 'Konsumsi cairan Anda sudah sesuai dengan kebutuhan harian.';
+                default:
+                    return '';
+            }
+        }
+
+        function displayResult(name, calculation, actual, status, suggestion) {
+            document.getElementById('result-name').textContent = `Halo, ${name}!`;
+            let details = `Kategori: ${calculation.category}<br>`;
+            details += `Kebutuhan cairan harian: ${calculation.fluidIntake} ml`;
+            document.getElementById('result-details').innerHTML = details;
+            document.getElementById('result-actual').innerHTML = `Konsumsi cairan aktual Anda: ${actual} ml`;
+            document.getElementById('result-status').textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            document.getElementById('result-status').className = `card-text fw-bold text-${status === 'cukup' ? 'success' : (status === 'kurang' ? 'warning' : 'danger')}`;
+            document.getElementById('result-suggestion').textContent = suggestion;
+
+            // Handle YouTube Video
+            const videoSection = document.getElementById('video-section');
+            const resultVideo = document.getElementById('result-video');
+
+            if (status === 'kurang') {
+                resultVideo.src = videoLinks.kurang + "?autoplay=1";
+                videoSection.classList.remove('hidden');
+            } else if (status === 'berlebih') {
+                resultVideo.src = videoLinks.berlebih + "?autoplay=1";
+                videoSection.classList.remove('hidden');
+            } else {
+                resultVideo.src = videoLinks.cukup + "?autoplay=1";
+                videoSection.classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('btn-back').addEventListener('click', () => {
+            showSection(sectionHome);
+            setActiveNav(navHome);
+            document.getElementById('result-video').src = "";
+            document.getElementById('video-section').classList.add('hidden');
+        });
+
+        // History Handling
+        function saveToHistory(name, age, gender, weight, calculation, actual, status) {
+            const history = JSON.parse(localStorage.getItem('fluidHistory')) || [];
+            const entry = {
+                id: Date.now(),
+                name,
+                age,
+                gender,
+                weight,
+                calculation,
+                actual,
+                status,
+                date: new Date().toLocaleString()
+            };
+            history.push(entry);
+            localStorage.setItem('fluidHistory', JSON.stringify(history));
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('fluidHistory')) || [];
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-center">Tidak ada riwayat perhitungan.</p>';
+                return;
+            }
+
+            history.reverse().forEach(entry => {
+                const item = document.createElement('div');
+                item.classList.add('list-group-item', 'list-group-item-action', 'flex-column', 'align-items-start', 'mb-2');
+                item.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">${entry.name} (${entry.age} tahun)</h5>
+                        <small>${entry.date}</small>
+                    </div>
+                    <p class="mb-1">Kategori: ${entry.calculation.category}</p>
+                    <p class="mb-1">Kebutuhan cairan: ${entry.calculation.fluidIntake} ml</p>
+                    <p class="mb-1">Konsumsi cairan aktual: ${entry.actual} ml</p>
+                    <p class="mb-1">Status: <span class="badge bg-${entry.status === 'cukup' ? 'success' : (entry.status === 'kurang' ? 'warning' : 'danger')}">${entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}</span></p>
+                    <button class="btn btn-sm btn-danger btn-delete" data-id="${entry.id}">Hapus</button>
+                `;
+                historyList.appendChild(item);
+            });
+
+            // Add event listeners to delete buttons
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = parseInt(button.getAttribute('data-id'));
+                    deleteHistoryEntry(id);
+                });
+            });
+        }
+
+        function deleteHistoryEntry(id) {
+            let history = JSON.parse(localStorage.getItem('fluidHistory')) || [];
+            history = history.filter(entry => entry.id !== id);
+            localStorage.setItem('fluidHistory', JSON.stringify(history));
+            loadHistory();
+        }
+
+        document.getElementById('btn-clear-history').addEventListener('click', () => {
+            if (confirm('Apakah Anda yakin ingin menghapus semua riwayat?')) {
+                localStorage.removeItem('fluidHistory');
+                loadHistory();
+            }
+        });
+
+        // Settings Handling
+        const themeSelect = document.getElementById('theme-select');
+        const body = document.body;
+
+        function loadSettings() {
+            const theme = localStorage.getItem('theme') || 'light';
+            themeSelect.value = theme;
+            applyTheme(theme);
+        }
+
+        themeSelect.addEventListener('change', function () {
+            const selectedTheme = this.value;
+            localStorage.setItem('theme', selectedTheme);
+            applyTheme(selectedTheme);
+        });
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                document.querySelector('.navbar').classList.replace('navbar-primary', 'navbar-dark');
+                document.querySelector('.navbar').classList.replace('bg-primary', 'bg-dark');
+            } else {
+                body.classList.remove('dark-theme');
+                document.querySelector('.navbar').classList.replace('navbar-dark', 'navbar-primary');
+                document.querySelector('.navbar').classList.replace('bg-dark', 'bg-primary');
+            }
+        }
+
+        document.getElementById('btn-reset-data').addEventListener('click', () => {
+            if (confirm('Apakah Anda yakin ingin mereset semua data?')) {
+                localStorage.clear();
+                loadHistory();
+                loadSettings();
+                alert('Semua data telah direset.');
+            }
+        });
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection(sectionHome);
+            setActiveNav(navHome);
+            loadSettings();
+        });
+
+        // Close video when modal is closed or navigating away
+        window.addEventListener('beforeunload', () => {
+            document.getElementById('result-video').src = "";
+        });
+    </script>
+</body>
+
+</html>
