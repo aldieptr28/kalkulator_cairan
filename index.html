@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Custom Styles */
         body {
@@ -23,7 +25,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             animation: fadeIn 1s ease-in-out;
         }
 
@@ -80,6 +82,110 @@
             width: 100%;
             height: 100%;
         }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .welcome-cards .card {
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .welcome-cards .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Interactive Glass Feature */
+        .glass-interactive {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .glass-interactive .glass-icon {
+            font-size: 3rem;
+            color: #17a2b8;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .glass-interactive .glass-icon:active {
+            transform: scale(0.9);
+            color: #138496;
+        }
+
+        .glass-count {
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+
+        /* Tooltip Styles */
+        .tooltip-inner {
+            max-width: 200px;
+            text-align: center;
+        }
+
+        /* Animations for Drink Section */
+        .drink-animation {
+            animation: drinkShake 0.5s;
+        }
+
+        @keyframes drinkShake {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(15deg);
+            }
+
+            50% {
+                transform: rotate(-15deg);
+            }
+
+            75% {
+                transform: rotate(10deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 767.98px) {
+            .welcome-cards .col-md-6 {
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Progress Bar Customization */
+        .progress {
+            height: 30px;
+        }
+
+        .progress-bar {
+            font-weight: bold;
+            line-height: 30px;
+        }
+
+        /* Dropdown for History */
+        .history-dropdown .collapse {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -107,6 +213,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="nav-settings">Pengaturan</a>
                     </li>
+                    <!-- Tambahkan item Profil di sini -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-profile">Profil</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -115,8 +225,35 @@
     <!-- Main Container -->
     <div class="container my-4">
 
-        <!-- Home Section -->
-        <div id="section-home" class="fade-in">
+        <!-- Welcome Section -->
+        <div id="section-welcome" class="fade-in welcome-section">
+            <h1>Selamat Datang di Kalkulator Kebutuhan Cairan Harian</h1>
+            <p>Aplikasi ini membantu Anda menghitung kebutuhan cairan harian dan mencatat konsumsi cairan Anda
+                sehari-hari.</p>
+            <div class="row welcome-cards">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100" id="card-calculator">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calculator fa-3x mb-3 text-primary"></i>
+                            <h5 class="card-title">Kalkulator</h5>
+                            <p class="card-text">Hitung kebutuhan cairan harian Anda berdasarkan profil pribadi.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100" id="card-drink">
+                        <div class="card-body text-center">
+                            <i class="fas fa-water fa-3x mb-3 text-success"></i>
+                            <h5 class="card-title">Minum</h5>
+                            <p class="card-text">Catat jumlah gelas yang Anda minum setiap hari dengan mudah.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculator Section -->
+        <div id="section-calculator" class="hidden fade-in">
             <h2 class="mb-4 text-center">Kalkulator Kebutuhan Cairan Harian</h2>
             <form id="fluid-form" class="needs-validation" novalidate>
                 <div class="mb-3">
@@ -128,7 +265,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="age" class="form-label">Umur (tahun)</label>
-                    <input type="number" class="form-control" id="age" min="0" required>
+                    <input type="number" class="form-control" id="age" min="0" step="0.1" required>
                     <div class="invalid-feedback">
                         Silakan isi umur Anda.
                     </div>
@@ -146,50 +283,154 @@
                 </div>
                 <div class="mb-3 hidden" id="weight-group">
                     <label for="weight" class="form-label">Berat Badan (kg)</label>
-                    <input type="number" class="form-control" id="weight" min="0">
+                    <input type="number" class="form-control" id="weight" min="0" step="0.1">
                     <div class="invalid-feedback">
                         Silakan isi berat badan Anda.
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="actual-intake" class="form-label">Konsumsi Cairan Aktual (ml)</label>
-                    <input type="number" class="form-control" id="actual-intake" min="0" required>
+                    <label for="glass-intake" class="form-label">Konsumsi Cairan Aktual (Gelas)</label>
+                    <input type="number" class="form-control" id="glass-intake" min="0" step="0.1" required>
                     <div class="invalid-feedback">
-                        Silakan isi konsumsi cairan harian Anda.
+                        Silakan isi konsumsi cairan harian Anda dalam gelas.
                     </div>
+                    <div class="form-text">1 gelas = 250 ml</div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Hitung Kebutuhan Cairan</button>
             </form>
+
+            <!-- Result Section -->
+            <div id="section-result-calculator" class="hidden fade-in mt-4">
+                <h2 class="mb-4 text-center">Hasil Perhitungan</h2>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title" id="result-name"></h5>
+                        <p class="card-text" id="result-details"></p>
+                        <p class="card-text" id="result-actual"></p>
+                        <p class="card-text fw-bold" id="result-status"></p>
+                        <p class="card-text" id="result-suggestion"></p>
+                    </div>
+                </div>
+                <div id="video-section-calculator" class="mb-4 hidden">
+                    <h5>Rekomendasi Video:</h5>
+                    <div class="video-container">
+                        <iframe id="result-video-calculator" src="" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+                <button class="btn btn-secondary w-100" id="btn-back-calculator">Kembali</button>
+            </div>
         </div>
 
-        <!-- Result Section -->
-        <div id="section-result" class="hidden fade-in">
-            <h2 class="mb-4 text-center">Hasil Perhitungan</h2>
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title" id="result-name"></h5>
-                    <p class="card-text" id="result-details"></p>
-                    <p class="card-text" id="result-actual"></p>
-                    <p class="card-text" id="result-status" class="fw-bold"></p>
-                    <p class="card-text" id="result-suggestion"></p>
-                </div>
+        <!-- Drink Section -->
+        <div id="section-drink" class="hidden fade-in">
+            <h2 class="mb-4 text-center">Catat Konsumsi Cairan Anda</h2>
+
+            <!-- User Details Form (Shown if not set) -->
+            <div id="drink-user-details" class="mb-4">
+                <h4>Pengaturan Awal</h4>
+                <form id="drink-user-form" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="drink-name" class="form-label">Nama</label>
+                        <input type="text" class="form-control" id="drink-name" required>
+                        <div class="invalid-feedback">
+                            Silakan isi nama Anda.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="drink-age" class="form-label">Umur (tahun)</label>
+                        <input type="number" class="form-control" id="drink-age" min="0" step="0.1" required>
+                        <div class="invalid-feedback">
+                            Silakan isi umur Anda.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="drink-gender" class="form-label">Jenis Kelamin</label>
+                        <select class="form-select" id="drink-gender" required>
+                            <option value="" selected disabled>Pilih jenis kelamin</option>
+                            <option value="Perempuan">Perempuan</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Silakan pilih jenis kelamin Anda.
+                        </div>
+                    </div>
+                    <div class="mb-3 hidden" id="drink-weight-group">
+                        <label for="drink-weight" class="form-label">Berat Badan (kg)</label>
+                        <input type="number" class="form-control" id="drink-weight" min="0" step="0.1">
+                        <div class="invalid-feedback">
+                            Silakan isi berat badan Anda.
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Simpan Pengaturan</button>
+                </form>
             </div>
-            <div id="video-section" class="mb-4 hidden">
-                <h5>Rekomendasi Video:</h5>
-                <div class="video-container">
-                    <iframe id="result-video" src="" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen></iframe>
+
+            <!-- Drink Logging Interface (Shown if user details are set) -->
+            <div id="drink-logging-interface" class="hidden">
+                <!-- Informasi Profil -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title" id="drink-profile-name">Nama: -</h5>
+                        <p class="card-text" id="drink-profile-age">Umur: - tahun</p>
+                        <p class="card-text" id="drink-profile-gender">Jenis Kelamin: -</p>
+                        <p class="card-text" id="drink-profile-weight">Berat Badan: - kg</p>
+                    </div>
                 </div>
+
+                <!-- Kebutuhan Minum Harian -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Kebutuhan Minum Harian Anda</h5>
+                        <p class="card-text" id="drink-daily-need-info">Anda membutuhkan X gelas (Y ml) cairan per hari.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mb-4">
+                    <h5>Kebutuhan Cairan Harian Anda: <span id="daily-fluid-need">0</span> ml</h5>
+                    <div class="progress">
+                        <div id="fluid-progress-bar" class="progress-bar" role="progressbar" style="width: 0%;">
+                            0%
+                        </div>
+                    </div>
+                    <p class="mt-2">Konsumsi Cairan Hari Ini: <span id="consumed-fluid">0</span> ml</p>
+                </div>
+
+                <!-- Interactive Glass Feature -->
+                <div class="glass-interactive mt-5">
+                    <h4 class="mb-3">Rekam Konsumsi Cairan Anda</h4>
+                    <i class="fas fa-water glass-icon" id="glass-button" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="Klik untuk menambah gelas"></i>
+                    <div class="glass-count">Jumlah Gelas Hari Ini: <span id="daily-glass-count">0</span></div>
+                </div>
+
+                <!-- Submit Daily Consumption -->
+                <button class="btn btn-success mt-3 w-100" id="btn-submit-glass">Simpan Konsumsi Hari Ini</button>
             </div>
-            <button class="btn btn-secondary w-100" id="btn-back">Kembali</button>
         </div>
 
         <!-- History Section -->
         <div id="section-history" class="hidden fade-in">
-            <h2 class="mb-4 text-center">Riwayat Perhitungan</h2>
-            <div id="history-list" class="list-group mb-3">
-                <!-- Riwayat akan ditampilkan di sini -->
+            <h2 class="mb-4 text-center">Riwayat Perhitungan dan Konsumsi Cairan</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <h4>Kalkulator</h4>
+                    <div id="history-calculator-list" class="list-group mb-3">
+                        <!-- Riwayat Kalkulator akan ditampilkan di sini -->
+                    </div>
+                    <button class="btn btn-warning w-100" id="btn-reset-calculator-history">Reset Riwayat
+                        Kalkulator</button>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h4>Minum</h4>
+                    <div id="history-drink-list" class="list-group mb-3">
+                        <!-- Riwayat Minum akan ditampilkan di sini -->
+                    </div>
+                    <button class="btn btn-warning w-100" id="btn-reset-drink-history">Reset Riwayat Minum</button>
+                </div>
             </div>
             <button class="btn btn-danger w-100" id="btn-clear-history">Hapus Semua Riwayat</button>
         </div>
@@ -198,12 +439,67 @@
         <div id="section-about" class="hidden fade-in">
             <h2 class="mb-4 text-center">Tentang Aplikasi</h2>
             <p>Aplikasi ini dirancang untuk membantu Anda menghitung kebutuhan cairan harian berdasarkan umur, jenis
-                kelamin, berat badan, dan konsumsi cairan aktual. Perhitungan didasarkan pada pedoman Kementerian
-                Kesehatan Republik Indonesia.</p>
+                kelamin, berat badan, dan konsumsi cairan aktual. Selain itu, aplikasi ini juga memungkinkan Anda untuk
+                mencatat konsumsi cairan harian Anda dengan mudah.</p>
             <h5>Referensi:</h5>
             <ul>
                 <li>Kebutuhan cairan anak-anak, dewasa, dan lansia berdasarkan pedoman Kemenkes RI.</li>
             </ul>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="section-profile" class="hidden fade-in">
+            <h2 class="mb-4 text-center">Profil Anda</h2>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title" id="profile-name">Nama: -</h5>
+                    <p class="card-text" id="profile-age">Umur: - tahun</p>
+                    <p class="card-text" id="profile-gender">Jenis Kelamin: -</p>
+                    <p class="card-text" id="profile-weight">Berat Badan: - kg</p>
+                    <p class="card-text fw-bold" id="profile-fluid-need">Kebutuhan Cairan Harian: - ml</p>
+                    <button class="btn btn-primary" id="btn-edit-profile">Edit Profil</button>
+                </div>
+            </div>
+
+            <!-- Form Edit Profil -->
+            <div id="edit-profile-form" class="hidden">
+                <h4>Edit Profil</h4>
+                <form id="form-edit-profile" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="edit-name" class="form-label">Nama</label>
+                        <input type="text" class="form-control" id="edit-name" required>
+                        <div class="invalid-feedback">
+                            Silakan isi nama Anda.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-age" class="form-label">Umur (tahun)</label>
+                        <input type="number" class="form-control" id="edit-age" min="0" step="0.1" required>
+                        <div class="invalid-feedback">
+                            Silakan isi umur Anda.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-gender" class="form-label">Jenis Kelamin</label>
+                        <select class="form-select" id="edit-gender" required>
+                            <option value="" selected disabled>Pilih jenis kelamin</option>
+                            <option value="Perempuan">Perempuan</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Silakan pilih jenis kelamin Anda.
+                        </div>
+                    </div>
+                    <div class="mb-3 hidden" id="edit-weight-group">
+                        <label for="edit-weight" class="form-label">Berat Badan (kg)</label>
+                        <input type="number" class="form-control" id="edit-weight" min="0" step="0.1">
+                        <div class="invalid-feedback">
+                            Silakan isi berat badan Anda.
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Simpan Perubahan</button>
+                </form>
+            </div>
         </div>
 
         <!-- Settings Section -->
@@ -236,14 +532,17 @@
         const navHistory = document.getElementById('nav-history');
         const navAbout = document.getElementById('nav-about');
         const navSettings = document.getElementById('nav-settings');
+        const navProfile = document.getElementById('nav-profile'); // Tambahkan ini
 
-        const sectionHome = document.getElementById('section-home');
-        const sectionResult = document.getElementById('section-result');
+        const sectionWelcome = document.getElementById('section-welcome');
+        const sectionCalculator = document.getElementById('section-calculator');
+        const sectionDrink = document.getElementById('section-drink');
         const sectionHistory = document.getElementById('section-history');
         const sectionAbout = document.getElementById('section-about');
         const sectionSettings = document.getElementById('section-settings');
+        const sectionProfile = document.getElementById('section-profile'); // Tambahkan ini
 
-        const allSections = [sectionHome, sectionResult, sectionHistory, sectionAbout, sectionSettings];
+        const allSections = [sectionWelcome, sectionCalculator, sectionDrink, sectionHistory, sectionAbout, sectionSettings, sectionProfile]; // Update array
 
         function showSection(section) {
             allSections.forEach(sec => {
@@ -255,8 +554,20 @@
             });
         }
 
+        function setActiveNav(activeNav) {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(nav => {
+                if (nav === activeNav) {
+                    nav.classList.add('active');
+                } else {
+                    nav.classList.remove('active');
+                }
+            });
+        }
+
+        // Event Listeners untuk Navigasi
         navHome.addEventListener('click', () => {
-            showSection(sectionHome);
+            showSection(sectionWelcome);
             setActiveNav(navHome);
         });
 
@@ -277,40 +588,48 @@
             loadSettings();
         });
 
-        function setActiveNav(activeNav) {
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(nav => {
-                if (nav === activeNav) {
-                    nav.classList.add('active');
-                } else {
-                    nav.classList.remove('active');
-                }
-            });
-        }
+        // Event Listener untuk Profil
+        navProfile.addEventListener('click', () => {
+            showSection(sectionProfile);
+            setActiveNav(navProfile);
+            loadProfile();
+        });
 
-        // Form Handling
+        // Event Listeners untuk Welcome Cards
+        document.getElementById('card-calculator').addEventListener('click', () => {
+            showSection(sectionCalculator);
+            setActiveNav(navHome);
+        });
+
+        document.getElementById('card-drink').addEventListener('click', () => {
+            showSection(sectionDrink);
+            setActiveNav(navHome);
+            initializeDrinkSection();
+        });
+
+        // Form Handling untuk Calculator
         const fluidForm = document.getElementById('fluid-form');
         const weightGroup = document.getElementById('weight-group');
 
-        // Show/hide weight input based on age
+        // Show/hide weight input berdasarkan umur
         document.getElementById('age').addEventListener('input', function () {
-            const age = parseInt(this.value);
+            const age = parseFloat(this.value);
             if (!isNaN(age)) {
-                if (age < 18) {
-                    weightGroup.classList.remove('hidden');
-                    document.getElementById('weight').setAttribute('required', 'required');
-                } else {
+                if (age < 1) {
                     weightGroup.classList.add('hidden');
                     document.getElementById('weight').removeAttribute('required');
+                } else {
+                    weightGroup.classList.remove('hidden');
+                    document.getElementById('weight').setAttribute('required', 'required');
                 }
             }
         });
 
         // YouTube Video Links
         const videoLinks = {
-            kurang: "https://www.youtube.com/embed/VIDEO_ID_A", // Ganti VIDEO_ID_A dengan ID video YouTube yang relevan
-            cukup: "https://www.youtube.com/embed/VIDEO_ID_C",  // Ganti VIDEO_ID_C dengan ID video YouTube yang relevan
-            berlebih: "https://www.youtube.com/embed/VIDEO_ID_B"  // Ganti VIDEO_ID_B dengan ID video YouTube yang relevan
+            kurang: "https://www.youtube.com/embed/MnbKjNjxu5Y?si=fGnL7NIh1GAxOPly", // Link untuk 'kurang'
+            cukup: "https://www.youtube.com/embed/MnbKjNjxu5Y?si=fGnL7NIh1GAxOPly",  // Ganti 'abcdefghijk' dengan ID video YouTube untuk 'cukup'
+            berlebih: "https://www.youtube.com/embed/MnbKjNjxu5Y?si=fGnL7NIh1GAxOPly"  // Ganti 'lmnopqrstuv' dengan ID video YouTube untuk 'berlebih'
         };
 
         fluidForm.addEventListener('submit', function (e) {
@@ -323,43 +642,81 @@
             }
 
             const name = document.getElementById('name').value.trim();
-            const age = parseInt(document.getElementById('age').value);
+            const age = parseFloat(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
             const weightInput = document.getElementById('weight');
             const weight = weightInput && !weightInput.classList.contains('hidden') ? parseFloat(weightInput.value) : null;
-            const actualIntake = parseFloat(document.getElementById('actual-intake').value);
+            const glassIntake = parseFloat(document.getElementById('glass-intake').value);
+            const actualIntake = glassIntake * 250; // Convert gelas ke ml
 
             const calculation = calculateFluidIntake(age, gender, weight);
             const status = determineStatus(actualIntake, calculation.fluidIntake);
             const suggestion = getSuggestion(status);
 
-            displayResult(name, calculation, actualIntake, status, suggestion);
-            saveToHistory(name, age, gender, weight, calculation, actualIntake, status);
-            showSection(sectionResult);
-            setActiveNav(navHome);
+            displayResultCalculator(name, calculation, actualIntake, status, suggestion);
+            saveToHistoryCalculator({
+                name,
+                age,
+                gender,
+                weight,
+                calculation,
+                actualIntake,
+                glassIntake,
+                status
+            });
+            showSection(sectionCalculator);
             fluidForm.classList.remove('was-validated');
             fluidForm.reset();
             weightGroup.classList.add('hidden');
             document.getElementById('weight').removeAttribute('required');
         });
 
+        /**
+         * Fungsi untuk menghitung kebutuhan cairan berdasarkan umur, jenis kelamin, dan berat badan.
+         * @param {number} age - Umur dalam tahun (bisa desimal untuk bulan).
+         * @param {string} gender - Jenis kelamin ('Perempuan' atau 'Laki-laki').
+         * @param {number} weight - Berat badan dalam kg (opsional, tergantung kategori umur).
+         * @returns {object} - Kategori dan kebutuhan cairan dalam ml.
+         */
         function calculateFluidIntake(age, gender, weight) {
             let category;
             let fluidIntake;
 
-            if (age < 18) {
-                category = 'Anak-anak';
+            if (age < 1) { // Bayi
+                category = 'Bayi';
+                if (age <= 0.5) { // 0-6 bulan
+                    fluidIntake = 700;
+                } else { // 7-12 bulan
+                    fluidIntake = 800;
+                }
+            } else if (age >= 1 && age < 14) { // Anak-Anak dan Remaja
+                category = 'Anak-Anak';
                 if (weight < 10) {
                     fluidIntake = weight * 100; // ml
                 } else if (weight >= 10 && weight <= 20) {
                     fluidIntake = 1000 + ((weight - 10) * 50);
-                } else { // weight > 20
+                } else { // weight >20
                     fluidIntake = 1500 + ((weight - 20) * 20);
                 }
-            } else if (age >= 18 && age < 60) {
+
+                // Adjust fluid intake based on specific age and gender
+                if (age >= 9 && age <= 13) { // Anak 9-13 tahun
+                    if (gender === 'Laki-laki') {
+                        fluidIntake = 2400;
+                    } else {
+                        fluidIntake = 2100;
+                    }
+                } else if (age >= 14 && age <= 18) { // Remaja 14-18 tahun
+                    if (gender === 'Laki-laki') {
+                        fluidIntake = 3300;
+                    } else {
+                        fluidIntake = 2300;
+                    }
+                }
+            } else if (age >= 18 && age < 60) { // Dewasa
                 category = 'Dewasa';
                 fluidIntake = 2000; // ml
-            } else { // Lansia
+            } else if (age >= 60) { // Lansia
                 category = 'Lansia';
                 if (gender === 'Perempuan') {
                     if (age >= 60 && age <= 64) {
@@ -386,6 +743,12 @@
             };
         }
 
+        /**
+         * Fungsi untuk menentukan status konsumsi cairan.
+         * @param {number} actual - Konsumsi cairan aktual dalam ml.
+         * @param {number} required - Kebutuhan cairan harian dalam ml.
+         * @returns {string} - Status ('kurang', 'cukup', 'berlebih').
+         */
         function determineStatus(actual, required) {
             if (actual < required * 0.9) {
                 return 'kurang';
@@ -396,6 +759,11 @@
             }
         }
 
+        /**
+         * Fungsi untuk mendapatkan saran berdasarkan status konsumsi cairan.
+         * @param {string} status - Status konsumsi cairan ('kurang', 'cukup', 'berlebih').
+         * @returns {string} - Saran untuk pengguna.
+         */
         function getSuggestion(status) {
             switch (status) {
                 case 'kurang':
@@ -409,19 +777,31 @@
             }
         }
 
-        function displayResult(name, calculation, actual, status, suggestion) {
+        /**
+         * Fungsi untuk menampilkan hasil perhitungan kalkulator.
+         * @param {string} name - Nama pengguna.
+         * @param {object} calculation - Objek berisi kategori dan kebutuhan cairan.
+         * @param {number} actual - Konsumsi cairan aktual dalam ml.
+         * @param {string} status - Status konsumsi cairan.
+         * @param {string} suggestion - Saran berdasarkan status.
+         */
+        function displayResultCalculator(name, calculation, actual, status, suggestion) {
+            // Show Result Section
+            const sectionResult = document.getElementById('section-result-calculator');
+            sectionResult.classList.remove('hidden');
+
             document.getElementById('result-name').textContent = `Halo, ${name}!`;
             let details = `Kategori: ${calculation.category}<br>`;
             details += `Kebutuhan cairan harian: ${calculation.fluidIntake} ml`;
             document.getElementById('result-details').innerHTML = details;
-            document.getElementById('result-actual').innerHTML = `Konsumsi cairan aktual Anda: ${actual} ml`;
+            document.getElementById('result-actual').innerHTML = `Konsumsi cairan aktual Anda: ${actual} ml (${(actual / 250).toFixed(2)} gelas)`;
             document.getElementById('result-status').textContent = status.charAt(0).toUpperCase() + status.slice(1);
             document.getElementById('result-status').className = `card-text fw-bold text-${status === 'cukup' ? 'success' : (status === 'kurang' ? 'warning' : 'danger')}`;
             document.getElementById('result-suggestion').textContent = suggestion;
 
             // Handle YouTube Video
-            const videoSection = document.getElementById('video-section');
-            const resultVideo = document.getElementById('result-video');
+            const videoSection = document.getElementById('video-section-calculator');
+            const resultVideo = document.getElementById('result-video-calculator');
 
             if (status === 'kurang') {
                 resultVideo.src = videoLinks.kurang + "?autoplay=1";
@@ -433,36 +813,66 @@
                 resultVideo.src = videoLinks.cukup + "?autoplay=1";
                 videoSection.classList.remove('hidden');
             }
+
+            // Add Event Listener for Back Button
+            document.getElementById('btn-back-calculator').addEventListener('click', () => {
+                sectionResult.classList.add('hidden');
+                showSection(sectionCalculator);
+                document.getElementById('result-video-calculator').src = "";
+                videoSection.classList.add('hidden');
+            });
         }
 
-        document.getElementById('btn-back').addEventListener('click', () => {
-            showSection(sectionHome);
-            setActiveNav(navHome);
-            document.getElementById('result-video').src = "";
-            document.getElementById('video-section').classList.add('hidden');
-        });
-
-        // History Handling
-        function saveToHistory(name, age, gender, weight, calculation, actual, status) {
-            const history = JSON.parse(localStorage.getItem('fluidHistory')) || [];
-            const entry = {
-                id: Date.now(),
-                name,
-                age,
-                gender,
-                weight,
-                calculation,
-                actual,
-                status,
-                date: new Date().toLocaleString()
-            };
+        // History Handling for Calculator
+        function saveToHistoryCalculator(entry) {
+            const history = JSON.parse(localStorage.getItem('fluidHistoryCalculator')) || [];
+            entry.id = Date.now();
+            entry.date = new Date().toLocaleString();
             history.push(entry);
-            localStorage.setItem('fluidHistory', JSON.stringify(history));
+            localStorage.setItem('fluidHistoryCalculator', JSON.stringify(history));
         }
 
+        // History Handling for Drink
+        function saveToHistoryDrink(entry) {
+            let history = JSON.parse(localStorage.getItem('fluidHistoryDrink')) || {};
+            const today = new Date().toLocaleDateString();
+
+            if (!history[today]) {
+                history[today] = {
+                    totalGlasses: 0,
+                    totalMl: 0,
+                    status: '',
+                    drinks: []
+                };
+            }
+
+            history[today].totalGlasses += entry.glasses;
+            history[today].totalMl += entry.glasses * 250;
+            history[today].drinks.push({
+                id: Date.now(),
+                time: new Date().toLocaleTimeString(),
+                glasses: entry.glasses,
+                ml: entry.glasses * 250
+            });
+
+            // Determine status for the day
+            const dailyNeed = parseFloat(localStorage.getItem('profileDailyFluidNeed')) || 0;
+            const status = determineStatus(history[today].totalMl, dailyNeed);
+            history[today].status = status;
+
+            localStorage.setItem('fluidHistoryDrink', JSON.stringify(history));
+            loadHistoryDrink();
+        }
+
+        // Load History
         function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('fluidHistory')) || [];
-            const historyList = document.getElementById('history-list');
+            loadHistoryCalculator();
+            loadHistoryDrink();
+        }
+
+        function loadHistoryCalculator() {
+            const history = JSON.parse(localStorage.getItem('fluidHistoryCalculator')) || [];
+            const historyList = document.getElementById('history-calculator-list');
             historyList.innerHTML = '';
 
             if (history.length === 0) {
@@ -470,50 +880,138 @@
                 return;
             }
 
-            history.reverse().forEach(entry => {
+            history.slice().reverse().forEach(entry => {
                 const item = document.createElement('div');
                 item.classList.add('list-group-item', 'list-group-item-action', 'flex-column', 'align-items-start', 'mb-2');
-                item.innerHTML = `
+                let content = `
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">${entry.name} (${entry.age} tahun)</h5>
                         <small>${entry.date}</small>
                     </div>
                     <p class="mb-1">Kategori: ${entry.calculation.category}</p>
                     <p class="mb-1">Kebutuhan cairan: ${entry.calculation.fluidIntake} ml</p>
-                    <p class="mb-1">Konsumsi cairan aktual: ${entry.actual} ml</p>
+                    <p class="mb-1">Konsumsi cairan aktual: ${entry.actualIntake} ml (${entry.glassIntake} gelas)</p>
                     <p class="mb-1">Status: <span class="badge bg-${entry.status === 'cukup' ? 'success' : (entry.status === 'kurang' ? 'warning' : 'danger')}">${entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}</span></p>
-                    <button class="btn btn-sm btn-danger btn-delete" data-id="${entry.id}">Hapus</button>
                 `;
+
+                item.innerHTML = content;
                 historyList.appendChild(item);
             });
+        }
 
-            // Add event listeners to delete buttons
-            const deleteButtons = document.querySelectorAll('.btn-delete');
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const id = parseInt(button.getAttribute('data-id'));
-                    deleteHistoryEntry(id);
+        function loadHistoryDrink() {
+            const history = JSON.parse(localStorage.getItem('fluidHistoryDrink')) || {};
+            const historyList = document.getElementById('history-drink-list');
+            historyList.innerHTML = '';
+
+            const dates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
+
+            if (dates.length === 0) {
+                historyList.innerHTML = '<p class="text-center">Tidak ada riwayat minum.</p>';
+                return;
+            }
+
+            dates.forEach(date => {
+                const entry = history[date];
+                const statusClass = entry.status === 'cukup' ? 'success' : (entry.status === 'kurang' ? 'warning' : 'danger');
+                const statusText = entry.status.charAt(0).toUpperCase() + entry.status.slice(1);
+
+                const item = document.createElement('div');
+                item.classList.add('list-group-item', 'mb-2');
+
+                // Header dengan tombol collapsible
+                const header = document.createElement('div');
+                header.classList.add('d-flex', 'w-100', 'justify-content-between', 'align-items-center');
+
+                const title = document.createElement('h5');
+                title.classList.add('mb-1');
+                title.textContent = `${date}`;
+
+                const statusBadge = document.createElement('span');
+                statusBadge.classList.add('badge', `bg-${statusClass}`);
+                statusBadge.textContent = statusText;
+
+                const button = document.createElement('button');
+                button.classList.add('btn', 'btn-sm', 'btn-outline-secondary');
+                button.setAttribute('data-bs-toggle', 'collapse');
+                button.setAttribute('data-bs-target', `#collapse-${date.replace(/\//g, '-')}`);
+                button.setAttribute('aria-expanded', 'false');
+                button.setAttribute('aria-controls', `collapse-${date.replace(/\//g, '-')}`);
+                button.textContent = 'Detail';
+
+                header.appendChild(title);
+                header.appendChild(statusBadge);
+                header.appendChild(button);
+
+                // Konten collapsible
+                const collapse = document.createElement('div');
+                collapse.classList.add('collapse', 'history-dropdown');
+                collapse.id = `collapse-${date.replace(/\//g, '-')}`;
+
+                const drinkList = document.createElement('ul');
+                drinkList.classList.add('list-group', 'mt-2');
+
+                entry.drinks.forEach(drink => {
+                    const drinkItem = document.createElement('li');
+                    drinkItem.classList.add('list-group-item');
+                    drinkItem.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <small>Waktu: ${drink.time}</small>
+                            <small>${drink.glasses} gelas (${drink.ml} ml)</small>
+                        </div>
+                    `;
+                    drinkList.appendChild(drinkItem);
                 });
+
+                collapse.appendChild(drinkList);
+
+                item.appendChild(header);
+                item.appendChild(collapse);
+                historyList.appendChild(item);
             });
         }
 
-        function deleteHistoryEntry(id) {
-            let history = JSON.parse(localStorage.getItem('fluidHistory')) || [];
-            history = history.filter(entry => entry.id !== id);
-            localStorage.setItem('fluidHistory', JSON.stringify(history));
-            loadHistory();
-        }
-
+        // Clear History
         document.getElementById('btn-clear-history').addEventListener('click', () => {
             if (confirm('Apakah Anda yakin ingin menghapus semua riwayat?')) {
-                localStorage.removeItem('fluidHistory');
+                localStorage.removeItem('fluidHistoryCalculator');
+                localStorage.removeItem('fluidHistoryDrink');
+                localStorage.removeItem('userDetails');
+                localStorage.removeItem('dailyGlassCount');
+                localStorage.removeItem('consumedFluid');
+                localStorage.removeItem('profileDailyFluidNeed'); // Tambahkan ini
+                localStorage.removeItem('alertedToday');
                 loadHistory();
+                initializeDrinkSection();
+            }
+        });
+
+        // Reset Calculator History
+        document.getElementById('btn-reset-calculator-history').addEventListener('click', () => {
+            if (confirm('Apakah Anda yakin ingin menghapus semua riwayat kalkulator?')) {
+                localStorage.removeItem('fluidHistoryCalculator');
+                loadHistoryCalculator();
+            }
+        });
+
+        // Reset Drink History
+        document.getElementById('btn-reset-drink-history').addEventListener('click', () => {
+            if (confirm('Apakah Anda yakin ingin menghapus semua riwayat minum?')) {
+                localStorage.removeItem('fluidHistoryDrink');
+                loadHistoryDrink();
+                // Reset daily counts as well
+                dailyGlassCount = 0;
+                consumedFluid = 0;
+                localStorage.setItem('dailyGlassCount', dailyGlassCount);
+                localStorage.setItem('consumedFluid', consumedFluid);
+                updateGlassCountDisplay();
+                updateProgressBar();
             }
         });
 
         // Settings Handling
         const themeSelect = document.getElementById('theme-select');
-        const body = document.body;
+        const bodyElement = document.body;
 
         function loadSettings() {
             const theme = localStorage.getItem('theme') || 'light';
@@ -529,13 +1027,13 @@
 
         function applyTheme(theme) {
             if (theme === 'dark') {
-                body.classList.add('dark-theme');
-                document.querySelector('.navbar').classList.replace('navbar-primary', 'navbar-dark');
-                document.querySelector('.navbar').classList.replace('bg-primary', 'bg-dark');
+                bodyElement.classList.add('dark-theme');
+                document.querySelector('.navbar').classList.remove('bg-primary');
+                document.querySelector('.navbar').classList.add('bg-dark');
             } else {
-                body.classList.remove('dark-theme');
-                document.querySelector('.navbar').classList.replace('navbar-dark', 'navbar-primary');
-                document.querySelector('.navbar').classList.replace('bg-dark', 'bg-primary');
+                bodyElement.classList.remove('dark-theme');
+                document.querySelector('.navbar').classList.remove('bg-dark');
+                document.querySelector('.navbar').classList.add('bg-primary');
             }
         }
 
@@ -544,20 +1042,429 @@
                 localStorage.clear();
                 loadHistory();
                 loadSettings();
+                initializeDrinkSection();
                 alert('Semua data telah direset.');
+            }
+        });
+
+        // Load Profil
+        function loadProfile() {
+            const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+
+            if (userDetails) {
+                document.getElementById('profile-name').textContent = `Nama: ${userDetails.name}`;
+                document.getElementById('profile-age').textContent = `Umur: ${userDetails.age} tahun`;
+                document.getElementById('profile-gender').textContent = `Jenis Kelamin: ${userDetails.gender}`;
+                document.getElementById('profile-weight').textContent = `Berat Badan: ${userDetails.weight ? userDetails.weight + ' kg' : '-'}`;
+
+                // Hitung kebutuhan cairan berdasarkan profil
+                const calculation = calculateFluidIntake(userDetails.age, userDetails.gender, userDetails.weight);
+                const fluidNeed = calculation.fluidIntake;
+                document.getElementById('profile-fluid-need').textContent = `Kebutuhan Cairan Harian: ${fluidNeed} ml`;
+
+                // Simpan kebutuhan cairan ke localStorage sebagai profileDailyFluidNeed
+                localStorage.setItem('profileDailyFluidNeed', fluidNeed);
+            } else {
+                document.getElementById('profile-name').textContent = `Nama: -`;
+                document.getElementById('profile-age').textContent = `Umur: - tahun`;
+                document.getElementById('profile-gender').textContent = `Jenis Kelamin: -`;
+                document.getElementById('profile-weight').textContent = `Berat Badan: - kg`;
+                document.getElementById('profile-fluid-need').textContent = `Kebutuhan Cairan Harian: - ml`;
+            }
+
+            // Sembunyikan atau tampilkan form edit profil
+            document.getElementById('edit-profile-form').classList.add('hidden');
+        }
+
+        // Tombol Edit Profil
+        document.getElementById('btn-edit-profile').addEventListener('click', () => {
+            const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+            if (userDetails) {
+                document.getElementById('edit-name').value = userDetails.name;
+                document.getElementById('edit-age').value = userDetails.age;
+                document.getElementById('edit-gender').value = userDetails.gender;
+                if (userDetails.age < 1) {
+                    document.getElementById('edit-weight-group').classList.add('hidden');
+                    document.getElementById('edit-weight').removeAttribute('required');
+                } else if (userDetails.age >= 1 && userDetails.age < 14) {
+                    document.getElementById('edit-weight-group').classList.remove('hidden');
+                    document.getElementById('edit-weight').value = userDetails.weight || '';
+                    document.getElementById('edit-weight').setAttribute('required', 'required');
+                } else {
+                    document.getElementById('edit-weight-group').classList.remove('hidden');
+                    document.getElementById('edit-weight').value = userDetails.weight || '';
+                    document.getElementById('edit-weight').setAttribute('required', 'required');
+                }
+            }
+            document.getElementById('edit-profile-form').classList.remove('hidden');
+        });
+
+        // Form Edit Profil Handling
+        const formEditProfile = document.getElementById('form-edit-profile');
+        const editWeightGroup = document.getElementById('edit-weight-group');
+
+        document.getElementById('edit-age').addEventListener('input', function () {
+            const age = parseFloat(this.value);
+            if (!isNaN(age)) {
+                if (age < 1) {
+                    editWeightGroup.classList.add('hidden');
+                    document.getElementById('edit-weight').removeAttribute('required');
+                } else {
+                    editWeightGroup.classList.remove('hidden');
+                    document.getElementById('edit-weight').setAttribute('required', 'required');
+                }
+            }
+        });
+
+        formEditProfile.addEventListener('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!formEditProfile.checkValidity()) {
+                formEditProfile.classList.add('was-validated');
+                return;
+            }
+
+            const name = document.getElementById('edit-name').value.trim();
+            const age = parseFloat(document.getElementById('edit-age').value);
+            const gender = document.getElementById('edit-gender').value;
+            const weightInput = document.getElementById('edit-weight');
+            const weight = weightInput && !weightInput.classList.contains('hidden') ? parseFloat(weightInput.value) : null;
+
+            const userDetails = { name, age, gender, weight };
+            localStorage.setItem('userDetails', JSON.stringify(userDetails));
+
+            // Recalculate daily fluid need
+            const calculation = calculateFluidIntake(age, gender, weight);
+            const fluidNeed = calculation.fluidIntake;
+            localStorage.setItem('profileDailyFluidNeed', fluidNeed);
+
+            // Update kebutuhan minum harian di halaman Minum jika sedang dibuka
+            const currentSection = document.querySelector('div.container > div:not(.hidden)');
+            if (currentSection === sectionDrink) {
+                initializeDrinkSection();
+            }
+
+            // Reset daily counts
+            dailyGlassCount = 0;
+            consumedFluid = 0;
+            localStorage.setItem('dailyGlassCount', dailyGlassCount);
+            localStorage.setItem('consumedFluid', consumedFluid);
+
+            // Update UI
+            loadProfile();
+            initializeDrinkSection();
+            formEditProfile.classList.remove('was-validated');
+            formEditProfile.reset();
+            editWeightGroup.classList.add('hidden');
+            document.getElementById('edit-weight').removeAttribute('required');
+            document.getElementById('edit-profile-form').classList.add('hidden');
+        });
+
+        // Interactive Glass Feature Handling
+        let dailyGlassCount = parseFloat(localStorage.getItem('dailyGlassCount')) || 0;
+        let consumedFluid = parseFloat(localStorage.getItem('consumedFluid')) || 0;
+        let dailyFluidNeed = parseFloat(localStorage.getItem('profileDailyFluidNeed')) || 0; // Menggunakan profileDailyFluidNeed
+
+        function initializeInteractiveFeature() {
+            updateGlassCountDisplay();
+            setupGlassButton();
+            setupSubmitGlassButton();
+            loadDrinkHistory();
+            resetDailyGlassCountAtMidnight();
+        }
+
+        // Initialize Drink Section
+        function initializeDrinkSection() {
+            const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+            const drinkUserDetails = document.getElementById('drink-user-details');
+            const drinkLoggingInterface = document.getElementById('drink-logging-interface');
+
+            if (!userDetails) {
+                // Show User Details Form
+                drinkUserDetails.classList.remove('hidden');
+                drinkLoggingInterface.classList.add('hidden');
+            } else {
+                // Show Drink Logging Interface
+                drinkUserDetails.classList.add('hidden');
+                drinkLoggingInterface.classList.remove('hidden');
+
+                // Menampilkan informasi profil
+                document.getElementById('drink-profile-name').textContent = `Nama: ${userDetails.name}`;
+                document.getElementById('drink-profile-age').textContent = `Umur: ${userDetails.age} tahun`;
+                document.getElementById('drink-profile-gender').textContent = `Jenis Kelamin: ${userDetails.gender}`;
+                document.getElementById('drink-profile-weight').textContent = `Berat Badan: ${userDetails.weight ? userDetails.weight + ' kg' : '-'}`;
+
+                // Set daily fluid need dari profileDailyFluidNeed
+                const profileFluidNeed = parseFloat(localStorage.getItem('profileDailyFluidNeed')) || 0;
+                dailyFluidNeed = profileFluidNeed;
+                localStorage.setItem('profileDailyFluidNeed', dailyFluidNeed);
+
+                if (!profileFluidNeed) {
+                    document.getElementById('drink-daily-need-info').textContent = `Anda membutuhkan - gelas (- ml) cairan per hari.`;
+                } else {
+                    const glassCount = (dailyFluidNeed / 250).toFixed(1); // 1 gelas = 250 ml
+                    document.getElementById('drink-daily-need-info').textContent = `Anda membutuhkan ${glassCount} gelas (${dailyFluidNeed} ml) cairan per hari.`;
+                }
+
+                updateProgressBar();
+                updateGlassCountDisplay();
+            }
+        }
+
+        // User Details Form Handling in Drink Section
+        const drinkUserForm = document.getElementById('drink-user-form');
+        const drinkWeightGroup = document.getElementById('drink-weight-group');
+
+        document.getElementById('drink-age').addEventListener('input', function () {
+            const age = parseFloat(this.value);
+            if (!isNaN(age)) {
+                if (age < 1) {
+                    drinkWeightGroup.classList.add('hidden');
+                    document.getElementById('drink-weight').removeAttribute('required');
+                } else {
+                    drinkWeightGroup.classList.remove('hidden');
+                    document.getElementById('drink-weight').setAttribute('required', 'required');
+                }
+            }
+        });
+
+        drinkUserForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!drinkUserForm.checkValidity()) {
+                drinkUserForm.classList.add('was-validated');
+                return;
+            }
+
+            const name = document.getElementById('drink-name').value.trim();
+            const age = parseFloat(document.getElementById('drink-age').value);
+            const gender = document.getElementById('drink-gender').value;
+            const weightInput = document.getElementById('drink-weight');
+            const weight = weightInput && !weightInput.classList.contains('hidden') ? parseFloat(weightInput.value) : null;
+
+            const userDetails = { name, age, gender, weight };
+            localStorage.setItem('userDetails', JSON.stringify(userDetails));
+
+            // Calculate and set daily fluid need
+            const calculation = calculateFluidIntake(age, gender, weight);
+            const fluidNeed = calculation.fluidIntake;
+            localStorage.setItem('profileDailyFluidNeed', fluidNeed);
+
+            // Reset daily counts
+            dailyGlassCount = 0;
+            consumedFluid = 0;
+            localStorage.setItem('dailyGlassCount', dailyGlassCount);
+            localStorage.setItem('consumedFluid', consumedFluid);
+
+            // Tampilkan kebutuhan minum harian
+            const glassCount = (dailyFluidNeed / 250).toFixed(1);
+            document.getElementById('drink-daily-need-info').textContent = `Anda membutuhkan ${glassCount} gelas (${dailyFluidNeed} ml) cairan per hari.`;
+
+            // Update UI
+            initializeDrinkSection();
+            drinkUserForm.classList.remove('was-validated');
+            drinkUserForm.reset();
+            drinkWeightGroup.classList.add('hidden');
+        });
+
+        function setupGlassButton() {
+            const glassButton = document.getElementById('glass-button');
+            glassButton.addEventListener('click', () => {
+                dailyGlassCount += 1;
+                consumedFluid += 250; // 1 gelas = 250 ml
+                localStorage.setItem('dailyGlassCount', dailyGlassCount);
+                localStorage.setItem('consumedFluid', consumedFluid);
+                updateGlassCountDisplay();
+                updateProgressBar();
+                animateGlassClick(glassButton);
+            });
+        }
+
+        function setupSubmitGlassButton() {
+            const submitButton = document.getElementById('btn-submit-glass');
+            submitButton.addEventListener('click', () => {
+                if (dailyGlassCount === 0) {
+                    alert('Anda belum menambah gelas cairan hari ini.');
+                    return;
+                }
+
+                const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+                if (!userDetails) {
+                    alert('Silakan atur detail pengguna terlebih dahulu.');
+                    return;
+                }
+
+                // Save to history
+                saveToHistoryDrink({
+                    glasses: dailyGlassCount,
+                    time: new Date().toLocaleTimeString(),
+                    glassNumber: dailyGlassCount // Number of glasses added
+                });
+
+                // Reset daily counts
+                dailyGlassCount = 0;
+                consumedFluid = 0;
+                localStorage.setItem('dailyGlassCount', dailyGlassCount);
+                localStorage.setItem('consumedFluid', consumedFluid);
+
+                // Update UI
+                updateGlassCountDisplay();
+                updateProgressBar();
+            });
+        }
+
+        function updateGlassCountDisplay() {
+            document.getElementById('daily-glass-count').textContent = dailyGlassCount;
+            document.getElementById('consumed-fluid').textContent = consumedFluid;
+        }
+
+        function animateGlassClick(element) {
+            element.classList.add('drink-animation');
+            setTimeout(() => {
+                element.classList.remove('drink-animation');
+            }, 500);
+        }
+
+        function loadDrinkHistory() {
+            loadHistoryDrink();
+        }
+
+        function loadHistoryDrink() {
+            const history = JSON.parse(localStorage.getItem('fluidHistoryDrink')) || {};
+            const historyList = document.getElementById('history-drink-list');
+            historyList.innerHTML = '';
+
+            const dates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
+
+            if (dates.length === 0) {
+                historyList.innerHTML = '<p class="text-center">Tidak ada riwayat minum.</p>';
+                return;
+            }
+
+            dates.forEach(date => {
+                const entry = history[date];
+                const statusClass = entry.status === 'cukup' ? 'success' : (entry.status === 'kurang' ? 'warning' : 'danger');
+                const statusText = entry.status.charAt(0).toUpperCase() + entry.status.slice(1);
+
+                const item = document.createElement('div');
+                item.classList.add('list-group-item', 'mb-2');
+
+                // Header dengan tombol collapsible
+                const header = document.createElement('div');
+                header.classList.add('d-flex', 'w-100', 'justify-content-between', 'align-items-center');
+
+                const title = document.createElement('h5');
+                title.classList.add('mb-1');
+                title.textContent = `${date}`;
+
+                const statusBadge = document.createElement('span');
+                statusBadge.classList.add('badge', `bg-${statusClass}`);
+                statusBadge.textContent = statusText;
+
+                const button = document.createElement('button');
+                button.classList.add('btn', 'btn-sm', 'btn-outline-secondary');
+                button.setAttribute('data-bs-toggle', 'collapse');
+                button.setAttribute('data-bs-target', `#collapse-${date.replace(/\//g, '-')}`);
+                button.setAttribute('aria-expanded', 'false');
+                button.setAttribute('aria-controls', `collapse-${date.replace(/\//g, '-')}`);
+                button.textContent = 'Detail';
+
+                header.appendChild(title);
+                header.appendChild(statusBadge);
+                header.appendChild(button);
+
+                // Konten collapsible
+                const collapse = document.createElement('div');
+                collapse.classList.add('collapse', 'history-dropdown');
+                collapse.id = `collapse-${date.replace(/\//g, '-')}`;
+
+                const drinkList = document.createElement('ul');
+                drinkList.classList.add('list-group', 'mt-2');
+
+                entry.drinks.forEach(drink => {
+                    const drinkItem = document.createElement('li');
+                    drinkItem.classList.add('list-group-item');
+                    drinkItem.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <small>Waktu: ${drink.time}</small>
+                            <small>${drink.glasses} gelas (${drink.ml} ml)</small>
+                        </div>
+                    `;
+                    drinkList.appendChild(drinkItem);
+                });
+
+                collapse.appendChild(drinkList);
+
+                item.appendChild(header);
+                item.appendChild(collapse);
+                historyList.appendChild(item);
+            });
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('fluid-progress-bar');
+            const percentage = dailyFluidNeed > 0 ? Math.min((consumedFluid / dailyFluidNeed) * 100, 100) : 0;
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${percentage.toFixed(1)}%`;
+            if (percentage >= 100) {
+                progressBar.classList.remove('bg-warning');
+                progressBar.classList.remove('bg-danger');
+                progressBar.classList.add('bg-success');
+                // Check if alert has been shown today
+                const today = new Date().toLocaleDateString();
+                const alertedToday = JSON.parse(localStorage.getItem('alertedToday')) || '';
+                if (alertedToday !== today) {
+                    alert('Kebutuhan minum Anda sudah cukup hari ini!');
+                    localStorage.setItem('alertedToday', JSON.stringify(today));
+                }
+            } else if (percentage >= 75) {
+                progressBar.classList.remove('bg-success');
+                progressBar.classList.remove('bg-danger');
+                progressBar.classList.add('bg-warning');
+            } else {
+                progressBar.classList.remove('bg-success');
+                progressBar.classList.remove('bg-warning');
+                progressBar.classList.add('bg-danger');
+            }
+        }
+
+        function resetDailyGlassCountAtMidnight() {
+            const now = new Date();
+            const millisTillMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0) - now;
+            setTimeout(() => {
+                dailyGlassCount = 0;
+                consumedFluid = 0;
+                localStorage.setItem('dailyGlassCount', dailyGlassCount);
+                localStorage.setItem('consumedFluid', consumedFluid);
+                localStorage.removeItem('alertedToday');
+                updateGlassCountDisplay();
+                updateProgressBar();
+                resetDailyGlassCountAtMidnight(); // Set kembali timeout untuk hari berikutnya
+            }, millisTillMidnight);
+        }
+
+        // Close video when navigating away
+        window.addEventListener('beforeunload', () => {
+            const videoCal = document.getElementById('result-video-calculator');
+            if (videoCal) {
+                videoCal.src = "";
             }
         });
 
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
-            showSection(sectionHome);
+            showSection(sectionWelcome);
             setActiveNav(navHome);
             loadSettings();
-        });
-
-        // Close video when modal is closed or navigating away
-        window.addEventListener('beforeunload', () => {
-            document.getElementById('result-video').src = "";
+            initializeInteractiveFeature();
+            initializeDrinkSection();
+            loadProfile();
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
         });
     </script>
 </body>
